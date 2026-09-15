@@ -199,31 +199,84 @@ function renderCart() {
     `).join('');
 }
 
+// Checkout Logic: අනිවාර්ය Login පරීක්ෂාව සහ Popup විවෘත කිරීම
 function checkout() {
     if (cart.length === 0) {
         alert("Cart is empty!");
         return;
     }
+
     const user = JSON.parse(localStorage.getItem('ravindu_user'));
+    
+    // Login වී නොමැති නම් කෙලින්ම login.html පිටුවට යැවීම
     if (!user) {
-        alert("Please sign in to complete your checkout.");
+        alert("Order එකක් දැමීමට පෙර කරුණාකර Sign In වන්න.");
         window.location.href = "login.html";
         return;
     }
-    alert(`Order placed successfully for ${user.name}!`);
-    cart = [];
-    saveCart();
-    renderCart();
+
+    // Modal එක පෙන්වා total price සහ customer නම auto fill කිරීම
+    const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const modalTotal = document.getElementById('modal-order-total');
+    if (modalTotal) {
+        modalTotal.textContent = `Rs. ${totalPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    }
+
+    const nameInput = document.getElementById('orderName');
+    if (nameInput && user.name) {
+        nameInput.value = user.name;
+    }
+
+    const modal = document.getElementById('checkout-modal');
+    if (modal) modal.classList.add('active');
     toggleCart();
 }
 
+function closeCheckoutModal() {
+    const modal = document.getElementById('checkout-modal');
+    if (modal) modal.classList.remove('active');
+}
+
+// Order Confirmation: විස්තර LocalStorage හි තැන්පත් කිරීම
+function confirmOrder(e) {
+    e.preventDefault();
+
+    const user = JSON.parse(localStorage.getItem('ravindu_user'));
+    const orderData = {
+        orderId: "ORD-" + Date.now(),
+        customerName: document.getElementById('orderName').value,
+        customerEmail: user ? user.email : "",
+        phone: document.getElementById('orderPhone').value,
+        address: document.getElementById('orderAddress').value,
+        paymentMethod: document.getElementById('orderPayment').value,
+        items: [...cart],
+        totalAmount: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
+        date: new Date().toLocaleString()
+    };
+
+    const orders = JSON.parse(localStorage.getItem('ravindu_orders')) || [];
+    orders.push(orderData);
+    localStorage.setItem('ravindu_orders', JSON.stringify(orders));
+
+    alert(`ස්තූතියි ${orderData.customerName}! ඔබගේ ඇණවුම සාර්ථකව ලැබුණා. (Order ID: ${orderData.orderId})`);
+
+    // Cart එක හිස් කිරීම සහ Modal එක වැසීම
+    cart = [];
+    saveCart();
+    renderCart();
+    closeCheckoutModal();
+    document.getElementById('orderForm').reset();
+}
+
+// Navbar Authentication UI Logic
 function updateAuthUI() {
     const user = JSON.parse(localStorage.getItem('ravindu_user'));
     const authLink = document.getElementById('auth-nav-link');
     if (user && authLink) {
         authLink.textContent = `Hi, ${user.name}`;
         authLink.href = "#";
-        authLink.onclick = () => {
+        authLink.onclick = (e) => {
+            e.preventDefault();
             if (confirm("Do you want to sign out?")) {
                 localStorage.removeItem('ravindu_user');
                 location.reload();

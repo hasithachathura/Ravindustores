@@ -26,17 +26,15 @@
             <input type="text" id="searchInput" placeholder="Search products..." onkeyup="filterProducts()">
         </div>
 
+        <!-- app.js එකෙන් Categories 25 ම මෙතැනට auto-load වේ -->
         <div class="category-tabs">
             <button class="tab-btn active" onclick="setCategory('all', this)">All</button>
-            <button class="tab-btn" onclick="setCategory('bags', this)">Bags</button>
-            <button class="tab-btn" onclick="setCategory('clothing', this)">Apparel</button>
-            <button class="tab-btn" onclick="setCategory('decor', this)">Decor</button>
-            <button class="tab-btn" onclick="setCategory('accessories', this)">Accessories</button>
         </div>
 
         <div class="product-grid" id="product-container"></div>
     </main>
 
+    <!-- Cart Drawer -->
     <aside class="cart-drawer" id="cart-drawer">
         <div class="cart-header">
             <h3>Your Cart</h3>
@@ -51,6 +49,38 @@
             <button class="checkout-btn" onclick="checkout()">Checkout</button>
         </div>
     </aside>
+
+    <!-- Checkout Popup Modal (Order Details & Shipping Form) -->
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="checkout-modal">
+            <div class="modal-header">
+                <h3>Order Details</h3>
+                <button class="modal-close-btn" onclick="closeCheckoutModal()">&times;</button>
+            </div>
+            <div class="checkout-summary-box">
+                <span>Total Amount:</span>
+                <span id="modal-order-total">Rs. 0.00</span>
+            </div>
+            <form id="orderForm" onsubmit="confirmOrder(event)">
+                <label style="font-size: 13px; font-weight: 600;">Full Name</label>
+                <input type="text" id="orderName" class="form-input" required placeholder="John Doe">
+
+                <label style="font-size: 13px; font-weight: 600;">Phone Number</label>
+                <input type="tel" id="orderPhone" class="form-input" required placeholder="07XXXXXXXX">
+
+                <label style="font-size: 13px; font-weight: 600;">Delivery Address</label>
+                <textarea id="orderAddress" class="form-input" rows="3" required placeholder="Street address, City"></textarea>
+
+                <label style="font-size: 13px; font-weight: 600;">Payment Method</label>
+                <select id="orderPayment" class="form-input">
+                    <option value="Cash on Delivery">Cash on Delivery (COD)</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                </select>
+
+                <button type="submit" class="confirm-btn">Confirm Order</button>
+            </form>
+        </div>
+    </div>
 
     <footer class="footer">
         <p>&copy; 2026 Ravindu Stores.</p>
