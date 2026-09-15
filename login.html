@@ -4,20 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ravindu Stores | Account</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --highlight: #f59e0b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 6%;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+        }
+        .logo span {
+            color: var(--highlight);
+        }
+        .navbar nav {
+            display: flex;
+            gap: 20px;
+        }
+        .navbar nav a {
+            text-decoration: none;
+            color: var(--muted);
+            font-weight: 600;
+        }
+        .navbar nav a.active {
+            color: var(--primary);
+        }
+        .auth-container {
+            max-width: 420px;
+            margin: 60px auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+        .auth-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+        .auth-tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .auth-tab-btn.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-group input:focus {
+            border-color: var(--accent);
+        }
+        .auth-btn {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+        .auth-btn:hover {
+            background: #1e293b;
+        }
+        .auth-status {
+            margin-top: 14px;
+            font-size: 13px;
+            text-align: center;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <header class="navbar">
         <div class="logo">Ravindu <span>Stores</span></div>
-        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
         <nav id="nav-links">
             <a href="index.html">Home</a>
             <a href="shop.html">Shop</a>
-            <a href="login.html" class="active" id="auth-nav-link">Sign In</a>
+            <a href="login.html" class="active">Sign In</a>
         </nav>
-        <button class="cart-trigger-btn" onclick="toggleCart()">
-            🛒 Cart (<span id="cart-count">0</span>)
-        </button>
     </header>
 
     <main class="auth-container">
@@ -61,21 +186,42 @@
         </div>
     </main>
 
-    <aside class="cart-drawer" id="cart-drawer">
-        <div class="cart-header">
-            <h3>Your Cart</h3>
-            <button class="close-btn" onclick="toggleCart()">&times;</button>
-        </div>
-        <div class="cart-items" id="cart-items"></div>
-        <div class="cart-footer">
-            <div class="cart-total-row">
-                <span>Total:</span>
-                <span id="cart-total">Rs. 0.00</span>
-            </div>
-            <button class="checkout-btn" onclick="checkout()">Checkout</button>
-        </div>
-    </aside>
+    <script>
+        function switchAuthTab(type) {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const loginTabBtn = document.getElementById('loginTabBtn');
+            const signupTabBtn = document.getElementById('signupTabBtn');
 
-    <script src="app.js"></script>
+            if (type === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                loginTabBtn.classList.add('active');
+                signupTabBtn.classList.remove('active');
+            } else {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                loginTabBtn.classList.remove('active');
+                signupTabBtn.classList.add('active');
+            }
+        }
+
+        function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            localStorage.setItem('ravindu_user', JSON.stringify({ name, email }));
+            document.getElementById('authStatus').innerHTML = '<span style="color: green;">Account created! Redirecting...</span>';
+            setTimeout(() => { window.location.href = "shop.html"; }, 1000);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            localStorage.setItem('ravindu_user', JSON.stringify({ name: email.split('@')[0], email }));
+            document.getElementById('authStatus').innerHTML = '<span style="color: green;">Signed in! Redirecting...</span>';
+            setTimeout(() => { window.location.href = "shop.html"; }, 1000);
+        }
+    </script>
 </body>
 </html>
