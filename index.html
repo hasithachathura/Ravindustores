@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ravindu Stores | Handcrafted & Modern Goods</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="logo">Ravindu <span>Stores</span></div>
+        <nav>
+            <a href="#products">Store</a>
+            <a href="#about">About</a>
+        </nav>
+        <button class="cart-trigger-btn" onclick="toggleCart()">
+            🛒 Cart (<span id="cart-count">0</span>)
+        </button>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-badge">Special Handcrafted Collection</span>
+            <h1>Curated Quality for Daily Life</h1>
+            <p>Explore our exclusive range of handcrafted essentials, premium accessories, and timeless home decor.</p>
+            <a href="#products" class="hero-btn">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Main Store Section -->
+    <main class="container" id="products">
+        <div class="catalog-header">
+            <div>
+                <h2>Our Catalog</h2>
+                <p class="subtitle">Select a category or search your favorite item</p>
+            </div>
+            <!-- Search Bar -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search products..." onkeyup="filterProducts()">
+            </div>
+        </div>
+
+        <!-- Category Filter Buttons -->
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="setCategory('all', this)">All</button>
+            <button class="tab-btn" onclick="setCategory('bags', this)">Bags & Wallets</button>
+            <button class="tab-btn" onclick="setCategory('clothing', this)">Apparel</button>
+            <button class="tab-btn" onclick="setCategory('decor', this)">Home Decor</button>
+            <button class="tab-btn" onclick="setCategory('accessories', this)">Accessories</button>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="product-grid" id="product-container">
+            <!-- Rendered by JavaScript dynamically -->
+        </div>
+    </main>
+
+    <!-- Slide-in Shopping Cart Drawer -->
+    <aside class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="close-btn" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <p class="empty-cart-msg">Your cart is empty.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total-row">
+                <span>Total:</span>
+                <span id="cart-total">Rs. 0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
+        </div>
+    </aside>
+
+    <footer class="footer" id="about">
+        <p>&copy; 2026 Ravindu Stores. Powerd By Hasiya.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
