@@ -20,23 +20,26 @@
         </button>
     </header>
 
+    <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-content">
-            <span class="hero-badge">Handmade & Lifestyle</span>
-            <h1>Curated Quality for Daily Life</h1>
-            <p>Explore exclusive handcrafted essentials, accessories, and modern decor.</p>
-            <a href="shop.html" class="hero-btn">Explore Collection</a>
+        <div>
+            <span class="hero-badge">New Collections 2026</span>
+            <h1>Discover Quality Everyday Essentials</h1>
+            <p>Shop over 300+ items across 25 curated categories with secure payments.</p>
+            <a href="shop.html" class="hero-btn">Explore Catalog</a>
         </div>
     </section>
 
+    <!-- Featured Products -->
     <main class="container">
         <div class="section-title">
-            <h2>Featured Collections</h2>
-            <a href="shop.html" class="view-all-link">View All &rarr;</a>
+            <h2>Featured Products</h2>
+            <a href="shop.html" class="view-all-link">View All (300) &rarr;</a>
         </div>
         <div class="product-grid" id="featured-container"></div>
     </main>
 
+    <!-- Cart Drawer -->
     <aside class="cart-drawer" id="cart-drawer">
         <div class="cart-header">
             <h3>Your Cart</h3>
@@ -52,8 +55,65 @@
         </div>
     </aside>
 
+    <!-- Checkout Modal With Crypto Support (Home එකටත් අත්‍යවශ්‍යයි) -->
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="checkout-modal">
+            <div class="modal-header">
+                <h3>Complete Your Order</h3>
+                <button class="modal-close-btn" onclick="closeCheckoutModal()">&times;</button>
+            </div>
+            
+            <div class="checkout-summary-box">
+                <span>Total LKR:</span>
+                <span id="modal-order-total">Rs. 0.00</span>
+            </div>
+
+            <form id="orderForm" onsubmit="confirmOrder(event)">
+                <label style="font-size: 13px; font-weight: 600;">Full Name</label>
+                <input type="text" id="orderName" class="form-input" required placeholder="John Doe">
+
+                <label style="font-size: 13px; font-weight: 600;">Phone Number</label>
+                <input type="tel" id="orderPhone" class="form-input" required placeholder="07XXXXXXXX">
+
+                <label style="font-size: 13px; font-weight: 600;">Delivery Address</label>
+                <textarea id="orderAddress" class="form-input" rows="3" required placeholder="Street address, City"></textarea>
+
+                <label style="font-size: 13px; font-weight: 600;">Payment Method</label>
+                <select id="orderPayment" class="form-input" onchange="toggleCryptoDetails()">
+                    <option value="Cash on Delivery">Cash on Delivery (COD)</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Crypto (USDT - TRC20)">Crypto (USDT - TRC20)</option>
+                </select>
+
+                <!-- Dynamic Crypto Box -->
+                <div id="cryptoDetailsBox" style="display: none; background: #0f172a; color: #fff; padding: 16px; border-radius: 8px; margin-bottom: 12px; font-size: 13px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #334155; padding-bottom: 8px;">
+                        <span style="color: #94a3b8;">Payable USDT:</span>
+                        <strong id="crypto-usdt-amount" style="color: #38bdf8; font-size: 16px;">0.00 USDT</strong>
+                    </div>
+
+                    <div style="text-align: center; margin: 12px 0;">
+                        <img id="crypto-qr-code" src="" alt="Crypto Payment QR" style="width: 150px; height: 150px; background: #fff; padding: 6px; border-radius: 8px; display: inline-block;">
+                        <p style="font-size: 11px; color: #94a3b8; margin-top: 5px;">Scan using Binance / Trust Wallet</p>
+                    </div>
+
+                    <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">TRC20 Wallet Address:</label>
+                    <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+                        <input type="text" id="walletAddressDisplay" readonly value="TXYZ1234567890YourRealWalletAddressHere" class="form-input" style="margin-bottom: 0; background: #1e293b; color: #f8fafc; font-family: monospace; font-size: 12px;">
+                        <button type="button" onclick="copyWalletAddress()" style="background: #2563eb; color: #fff; border: none; border-radius: 6px; padding: 0 12px; cursor: pointer; font-size: 12px;">Copy</button>
+                    </div>
+
+                    <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Transaction Hash / TxID:</label>
+                    <input type="text" id="cryptoTxId" class="form-input" placeholder="e.g. 3a7f8b9..." style="margin-bottom: 0; background: #fff; color: #0f172a;">
+                </div>
+
+                <button type="submit" class="confirm-btn">Confirm Order</button>
+            </form>
+        </div>
+    </div>
+
     <footer class="footer">
-        <p>&copy; 2026 Ravindu Stores. Built for Modern Web.</p>
+        <p>&copy; 2026 Ravindu Stores.</p>
     </footer>
 
     <script src="app.js"></script>

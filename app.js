@@ -1,4 +1,8 @@
-// Categories 25ක් සහ එක් category එකකට අදාළ images
+// Rate & Wallet Configuration
+const LKR_TO_USDT_RATE = 310; 
+const MERCHANT_WALLET_ADDRESS = "TXYZ1234567890YourRealWalletAddressHere"; // මෙතැනට ඔබගේ TRC20 Wallet Address එක යොදන්න
+
+// Categories 25ක් සහ Base Data
 const categoryDefinitions = [
     { key: "bags", name: "Bags", img: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=500&q=80", basePrice: 2500 },
     { key: "clothing", name: "Clothing", img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&q=80", basePrice: 1800 },
@@ -27,7 +31,7 @@ const categoryDefinitions = [
     { key: "baby", name: "Baby Collection", img: "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=500&q=80", basePrice: 1750 }
 ];
 
-// 25 Categories * 12 Items = නිෂ්පාදන 300ක් ජනනය කිරීම
+// නිෂ්පාදන 300ක් ජනනය කිරීම (25 Categories x 12 Items)
 const products = [];
 let idCounter = 1;
 
@@ -127,7 +131,7 @@ function filterProducts() {
     renderProducts(filtered);
 }
 
-// Cart System
+// Cart Handling
 function toggleCart() {
     const drawer = document.getElementById('cart-drawer');
     if (drawer) drawer.classList.toggle('open');
@@ -199,23 +203,22 @@ function renderCart() {
     `).join('');
 }
 
-// Checkout Logic: අනිවාර්ය Login පරීක්ෂාව සහ Popup විවෘත කිරීම
+// Checkout & Authentication Verification
 function checkout() {
     if (cart.length === 0) {
-        alert("Cart is empty!");
+        alert("Your cart is empty!");
         return;
     }
 
     const user = JSON.parse(localStorage.getItem('ravindu_user'));
     
-    // Login වී නොමැති නම් කෙලින්ම login.html පිටුවට යැවීම
+    // Login නොවී ඇත්නම් login පිටුවට හරවා යැවීම
     if (!user) {
-        alert("Order එකක් දැමීමට පෙර කරුණාකර Sign In වන්න.");
+        alert("Please sign in to complete your checkout.");
         window.location.href = "login.html";
         return;
     }
 
-    // Modal එක පෙන්වා total price සහ customer නම auto fill කිරීම
     const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const modalTotal = document.getElementById('modal-order-total');
     if (modalTotal) {
@@ -227,30 +230,76 @@ function checkout() {
         nameInput.value = user.name;
     }
 
-    const modal = document.getElementById('checkout-modal');
-    if (modal) modal.classList.add('active');
+    // Reset payment option
+    document.getElementById('orderPayment').value = "Cash on Delivery";
+    toggleCryptoDetails();
+
+    document.getElementById('checkout-modal').classList.add('active');
     toggleCart();
 }
 
 function closeCheckoutModal() {
-    const modal = document.getElementById('checkout-modal');
-    if (modal) modal.classList.remove('active');
+    document.getElementById('checkout-modal').classList.remove('active');
 }
 
-// Order Confirmation: විස්තර LocalStorage හි තැන්පත් කිරීම
+// Dynamic Crypto Calculation & Display
+function toggleCryptoDetails() {
+    const paymentMethod = document.getElementById('orderPayment').value;
+    const cryptoBox = document.getElementById('cryptoDetailsBox');
+    
+    if (!cryptoBox) return;
+
+    if (paymentMethod.includes('Crypto')) {
+        cryptoBox.style.display = 'block';
+
+        const totalLKR = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const totalUSDT = (totalLKR / LKR_TO_USDT_RATE).toFixed(2);
+        
+        document.getElementById('crypto-usdt-amount').textContent = `${totalUSDT} USDT`;
+
+        // Generate Dynamic QR code from public API
+        const qrImg = document.getElementById('crypto-qr-code');
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(MERCHANT_WALLET_ADDRESS)}`;
+        document.getElementById('walletAddressDisplay').value = MERCHANT_WALLET_ADDRESS;
+    } else {
+        cryptoBox.style.display = 'none';
+    }
+}
+
+function copyWalletAddress() {
+    const input = document.getElementById('walletAddressDisplay');
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    alert("Wallet address copied to clipboard!");
+}
+
+// Order Submission & LocalStorage Persistence
 function confirmOrder(e) {
     e.preventDefault();
 
     const user = JSON.parse(localStorage.getItem('ravindu_user'));
+    const paymentMethod = document.getElementById('orderPayment').value;
+    const txId = document.getElementById('cryptoTxId')?.value || "";
+
+    if (paymentMethod.includes('Crypto') && !txId.trim()) {
+        alert("Please enter the Transaction Hash (TxID) after sending USDT.");
+        return;
+    }
+
+    const totalLKR = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const totalUSDT = paymentMethod.includes('Crypto') ? (totalLKR / LKR_TO_USDT_RATE).toFixed(2) : null;
+
     const orderData = {
         orderId: "ORD-" + Date.now(),
         customerName: document.getElementById('orderName').value,
         customerEmail: user ? user.email : "",
         phone: document.getElementById('orderPhone').value,
         address: document.getElementById('orderAddress').value,
-        paymentMethod: document.getElementById('orderPayment').value,
+        paymentMethod: paymentMethod,
+        totalLKR: totalLKR,
+        totalUSDT: totalUSDT,
+        transactionHash: paymentMethod.includes('Crypto') ? txId.trim() : "N/A",
         items: [...cart],
-        totalAmount: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
         date: new Date().toLocaleString()
     };
 
@@ -258,17 +307,18 @@ function confirmOrder(e) {
     orders.push(orderData);
     localStorage.setItem('ravindu_orders', JSON.stringify(orders));
 
-    alert(`ස්තූතියි ${orderData.customerName}! ඔබගේ ඇණවුම සාර්ථකව ලැබුණා. (Order ID: ${orderData.orderId})`);
+    alert(`Thank you, ${orderData.customerName}! Your order (${orderData.orderId}) has been placed successfully.`);
 
-    // Cart එක හිස් කිරීම සහ Modal එක වැසීම
+    // Reset everything
     cart = [];
     saveCart();
     renderCart();
     closeCheckoutModal();
     document.getElementById('orderForm').reset();
+    document.getElementById('cryptoDetailsBox').style.display = 'none';
 }
 
-// Navbar Authentication UI Logic
+// Navbar Authentication UI Status
 function updateAuthUI() {
     const user = JSON.parse(localStorage.getItem('ravindu_user'));
     const authLink = document.getElementById('auth-nav-link');
