@@ -1,17 +1,49 @@
-const products = [
-    { id: 1, name: "Handmade Classic Bag", category: "bags", price: 2500, image: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=500&q=80" },
-    { id: 2, name: "Wool Knitted Beanie", category: "clothing", price: 1200, image: "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=500&q=80" },
-    { id: 3, name: "Ceramic Desk Planter", category: "decor", price: 1800, image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=500&q=80" },
-    { id: 4, name: "Minimalist Leather Wallet", category: "bags", price: 2200, image: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=500&q=80" },
-    { id: 5, name: "Linen Casual Shirt", category: "clothing", price: 3500, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500&q=80" },
-    { id: 6, name: "Scented Soy Candle", category: "decor", price: 1450, image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?w=500&q=80" },
-    { id: 7, name: "Polarized Wood Sunglasses", category: "accessories", price: 2900, image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&q=80" },
-    { id: 8, name: "Braided Leather Wristband", category: "accessories", price: 850, image: "https://images.unsplash.com/photo-1611591475816-562767073289?w=500&q=80" },
-    { id: 9, name: "Canvas Travel Duffel", category: "bags", price: 4800, image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&q=80" },
-    { id: 10, name: "Organic Cotton T-Shirt", category: "clothing", price: 1950, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&q=80" },
-    { id: 11, name: "Handcrafted Ceramic Mug", category: "decor", price: 1100, image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&q=80" },
-    { id: 12, name: "Vintage Brass Watch", category: "accessories", price: 5400, image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500&q=80" }
+// Categories 25ක් සහ එක් category එකකට අදාළ images
+const categoryDefinitions = [
+    { key: "bags", name: "Bags", img: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=500&q=80", basePrice: 2500 },
+    { key: "clothing", name: "Clothing", img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&q=80", basePrice: 1800 },
+    { key: "decor", name: "Home Decor", img: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=500&q=80", basePrice: 1500 },
+    { key: "accessories", name: "Accessories", img: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500&q=80", basePrice: 1200 },
+    { key: "footwear", name: "Footwear", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80", basePrice: 3200 },
+    { key: "electronics", name: "Electronics", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80", basePrice: 4500 },
+    { key: "kitchen", name: "Kitchenware", img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=500&q=80", basePrice: 1600 },
+    { key: "beauty", name: "Beauty & Care", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&q=80", basePrice: 1100 },
+    { key: "fitness", name: "Fitness Gear", img: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=500&q=80", basePrice: 2800 },
+    { key: "jewelry", name: "Jewelry", img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&q=80", basePrice: 3500 },
+    { key: "stationery", name: "Stationery", img: "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=500&q=80", basePrice: 650 },
+    { key: "outdoor", name: "Outdoor & Camp", img: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=500&q=80", basePrice: 4200 },
+    { key: "pets", name: "Pet Supplies", img: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=500&q=80", basePrice: 1400 },
+    { key: "toys", name: "Toys & Games", img: "https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=500&q=80", basePrice: 950 },
+    { key: "watches", name: "Watches", img: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=500&q=80", basePrice: 5800 },
+    { key: "eyewear", name: "Eyewear", img: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&q=80", basePrice: 2100 },
+    { key: "bedding", name: "Bedding & Linen", img: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=500&q=80", basePrice: 3900 },
+    { key: "lighting", name: "Lighting", img: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&q=80", basePrice: 2400 },
+    { key: "gardening", name: "Gardening", img: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=500&q=80", basePrice: 1300 },
+    { key: "bath", name: "Bath Essentials", img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&q=80", basePrice: 900 },
+    { key: "drinkware", name: "Drinkware & Mugs", img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&q=80", basePrice: 850 },
+    { key: "leather", name: "Leather Crafts", img: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=500&q=80", basePrice: 3100 },
+    { key: "art", name: "Art & Crafts", img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80", basePrice: 2700 },
+    { key: "travel", name: "Travel Gear", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&q=80", basePrice: 4800 },
+    { key: "baby", name: "Baby Collection", img: "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=500&q=80", basePrice: 1750 }
 ];
+
+// 25 Categories * 12 Items = නිෂ්පාදන 300ක් ජනනය කිරීම
+const products = [];
+let idCounter = 1;
+
+categoryDefinitions.forEach(cat => {
+    for (let i = 1; i <= 12; i++) {
+        products.push({
+            id: idCounter,
+            name: `${cat.name} Premium Edition ${i}`,
+            category: cat.key,
+            categoryName: cat.name,
+            price: cat.basePrice + (i * 120),
+            image: cat.img
+        });
+        idCounter++;
+    }
+});
 
 let cart = JSON.parse(localStorage.getItem('ravindu_cart')) || [];
 let activeCategory = 'all';
@@ -24,22 +56,37 @@ document.addEventListener("DOMContentLoaded", () => {
         renderFeatured();
     }
     if (document.getElementById("product-container")) {
+        renderCategoryButtons();
         renderProducts(products);
     }
 });
 
 function toggleMenu() {
     const nav = document.getElementById("nav-links");
-    nav.classList.toggle("open");
+    if (nav) nav.classList.toggle("open");
 }
 
 function renderFeatured() {
     const container = document.getElementById("featured-container");
-    container.innerHTML = products.slice(0, 4).map(createProductCard).join('');
+    if (!container) return;
+    container.innerHTML = products.slice(0, 8).map(createProductCard).join('');
+}
+
+function renderCategoryButtons() {
+    const tabsContainer = document.querySelector(".category-tabs");
+    if (!tabsContainer) return;
+
+    let buttonsHTML = `<button class="tab-btn active" onclick="setCategory('all', this)">All (300)</button>`;
+    categoryDefinitions.forEach(cat => {
+        buttonsHTML += `<button class="tab-btn" onclick="setCategory('${cat.key}', this)">${cat.name} (12)</button>`;
+    });
+    tabsContainer.innerHTML = buttonsHTML;
 }
 
 function renderProducts(items) {
     const container = document.getElementById("product-container");
+    if (!container) return;
+
     if (items.length === 0) {
         container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">No products found.</p>`;
         return;
@@ -51,7 +98,7 @@ function createProductCard(item) {
     return `
         <div class="card">
             <div class="card-img-wrapper">
-                <span class="card-category-badge">${item.category}</span>
+                <span class="card-category-badge">${item.categoryName || item.category}</span>
                 <img src="${item.image}" alt="${item.name}" loading="lazy">
             </div>
             <div class="card-body">
@@ -63,10 +110,10 @@ function createProductCard(item) {
     `;
 }
 
-function setCategory(cat, btn) {
-    activeCategory = cat;
+function setCategory(catKey, btn) {
+    activeCategory = catKey;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    if (btn) btn.classList.add('active');
     filterProducts();
 }
 
@@ -80,15 +127,17 @@ function filterProducts() {
     renderProducts(filtered);
 }
 
-// Cart Management
+// Cart System
 function toggleCart() {
-    document.getElementById('cart-drawer').classList.toggle('open');
+    const drawer = document.getElementById('cart-drawer');
+    if (drawer) drawer.classList.toggle('open');
 }
 
 function addToCart(id) {
     const product = products.find(p => p.id === id);
-    const existing = cart.find(item => item.id === id);
+    if (!product) return;
 
+    const existing = cart.find(item => item.id === id);
     if (existing) {
         existing.qty += 1;
     } else {
@@ -96,7 +145,8 @@ function addToCart(id) {
     }
     saveCart();
     renderCart();
-    document.getElementById('cart-drawer').classList.add('open');
+    const drawer = document.getElementById('cart-drawer');
+    if (drawer) drawer.classList.add('open');
 }
 
 function updateQty(id, delta) {
@@ -120,13 +170,15 @@ function renderCart() {
     const count = document.getElementById('cart-count');
     const total = document.getElementById('cart-total');
 
-    if (!container || !count || !total) return;
+    if (!count || !total) return;
 
     const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
     const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
     count.textContent = totalQty;
     total.textContent = `Rs. ${totalPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+    if (!container) return;
 
     if (cart.length === 0) {
         container.innerHTML = '<p style="color: #64748b; text-align: center; margin-top: 20px;">Cart is empty.</p>';
@@ -137,11 +189,11 @@ function renderCart() {
         <div class="cart-item-row">
             <div>
                 <strong>${item.name}</strong>
-                <div style="font-size: 13px; color: #64748b;">Rs. ${item.price} x ${item.qty}</div>
+                <div style="font-size: 13px; color: #64748b;">Rs. ${item.price.toLocaleString()} x ${item.qty}</div>
             </div>
             <div>
-                <button onclick="updateQty(${item.id}, -1)" style="padding: 2px 6px;">-</button>
-                <button onclick="updateQty(${item.id}, 1)" style="padding: 2px 6px;">+</button>
+                <button onclick="updateQty(${item.id}, -1)" style="padding: 2px 8px; cursor: pointer;">-</button>
+                <button onclick="updateQty(${item.id}, 1)" style="padding: 2px 8px; cursor: pointer;">+</button>
             </div>
         </div>
     `).join('');
@@ -163,46 +215,6 @@ function checkout() {
     saveCart();
     renderCart();
     toggleCart();
-}
-
-// Authentication Logic
-function switchAuthTab(type) {
-    const loginForm = document.getElementById('loginForm');
-    const signupForm = document.getElementById('signupForm');
-    const loginTabBtn = document.getElementById('loginTabBtn');
-    const signupTabBtn = document.getElementById('signupTabBtn');
-
-    if (type === 'login') {
-        loginForm.classList.remove('hidden');
-        signupForm.classList.add('hidden');
-        loginTabBtn.classList.add('active');
-        signupTabBtn.classList.remove('active');
-    } else {
-        loginForm.classList.add('hidden');
-        signupForm.classList.remove('hidden');
-        loginTabBtn.classList.remove('active');
-        signupTabBtn.classList.add('active');
-    }
-}
-
-function handleSignup(e) {
-    e.preventDefault();
-    const name = document.getElementById('signupName').value;
-    const email = document.getElementById('signupEmail').value;
-
-    const user = { name, email };
-    localStorage.setItem('ravindu_user', JSON.stringify(user));
-    document.getElementById('authStatus').innerHTML = `<span style="color: green;">Account created! Redirecting...</span>`;
-    setTimeout(() => { window.location.href = "shop.html"; }, 1000);
-}
-
-function handleLogin(e) {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const user = { name: email.split('@')[0], email };
-    localStorage.setItem('ravindu_user', JSON.stringify(user));
-    document.getElementById('authStatus').innerHTML = `<span style="color: green;">Signed in! Redirecting...</span>`;
-    setTimeout(() => { window.location.href = "shop.html"; }, 1000);
 }
 
 function updateAuthUI() {
